@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.LabMapper">
+
+    <sql id="Base_Column_List">
+        id,name,descr,start,end,status,type_id,labadmin_id
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Lab">
+        select lab.*, type.name as typeName, labadmin.name as labadminName
+        from lab
+        left join type on lab.type_id = type.id
+        left join labadmin on lab.labadmin_id = labadmin.id
+        <where>
+            <if test="id != null"> and id= #{id}</if>
+            <if test="name != null"> and lab.name like concat('%', #{name}, '%')</if>
+            <if test="labadminId != null"> and lab.labadmin_id= #{labadminId}</if>
+            <if test="typeId != null"> and lab.type_id= #{typeId}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Lab">
+        select
+        <include refid="Base_Column_List" />
+        from lab
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from lab
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Lab" useGeneratedKeys="true">
+        insert into lab
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">name,</if>
+                <if test="name != null">name,</if>
+                <if test="descr != null">descr,</if>
+                <if test="labadminId != null">labadmin_id,</if>
+                <if test="start != null">start,</if>
+                <if test="end != null">end,</if>
+                <if test="status != null">status,</if>
+                <if test="typeId != null">type_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
+                <if test="name != null">#{name},</if>
+                <if test="descr != null">#{descr},</if>
+                <if test="labadminId != null">#{labadminId},</if>
+                <if test="start != null">#{start},</if>
+                <if test="end != null">#{end},</if>
+                <if test="status != null">#{status},</if>
+                <if test="typeId != null">#{typeId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Lab">
+        update lab
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="descr != null">
+                descr = #{descr},
+            </if>
+            <if test="start != null">
+                start = #{start},
+            </if>
+            <if test="end != null">
+                end = #{end},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="typeId != null">
+                type_id = #{typeId},
+            </if>
+            <if test="labadminId != null">
+                labadmin_id = #{labadminId},
+            </if>
+        </set>
+        where id = #{id} 
+    </update>
+
+</mapper>

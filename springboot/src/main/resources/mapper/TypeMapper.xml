@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.TypeMapper">
+
+    <sql id="Base_Column_List">
+        id,name,descr,labadmin_id
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Type">
+        select type.*, labadmin.name as labadminName
+        from type
+        left join labadmin on type.labadmin_id = labadmin.id
+        <where>
+            <if test="id != null"> and id= #{id}</if>
+            <if test="name != null"> and type.name like concat('%', #{name}, '%')</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Type">
+        select
+        <include refid="Base_Column_List" />
+        from type
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from type
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Type" useGeneratedKeys="true">
+        insert into type
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">name,</if>
+                <if test="name != null">name,</if>
+                <if test="descr != null">descr,</if>
+                <if test="labadminId != null">labadmin_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
+                <if test="name != null">#{name},</if>
+                <if test="descr != null">#{descr},</if>
+                <if test="labadminId != null">#{labadminId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Type">
+        update type
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="descr != null">
+                descr = #{descr},
+            </if>
+            <if test="labadminId != null">
+                labadmin_id = #{labadminId},
+            </if>
+        </set>
+        where id = #{id} 
+    </update>
+
+</mapper>
