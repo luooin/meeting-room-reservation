@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.CheckMapper">
+
+    <sql id="Base_Column_List">
+        id,username,phone,content,time,department,lab_id,fix_id
+    </sql>
+
+    <select id="selectAll" resultType="com.example.entity.Checks">
+        select checks.*, lab.name as labName, fix.name as fixName
+        from checks
+        left join lab on checks.lab_id = lab.id
+        left join fix on checks.fix_id = fix.id
+        <where>
+            <if test="id != null"> and id= #{id}</if>
+            <if test="username != null"> and checks.username like concat('%', #{username}, '%')</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Checks">
+        select
+        <include refid="Base_Column_List" />
+        from checks
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from checks
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Checks" useGeneratedKeys="true">
+        insert into checks
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="username != null">username,</if>
+                <if test="phone != null">phone,</if>
+                <if test="content != null">content,</if>
+                <if test="time != null">time,</if>
+                <if test="department != null">department,</if>
+                <if test="labId != null">lab_id,</if>
+                <if test="fixId != null">fix_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
+                <if test="username != null">#{username},</if>
+                <if test="phone != null">#{phone},</if>
+                <if test="content != null">#{content},</if>
+                <if test="time != null">#{time},</if>
+                <if test="department != null">#{department},</if>
+                <if test="labId != null">#{labId},</if>
+                <if test="fixId != null">#{fixId},</if>
+        </trim>
+    </insert>
+    <!--username,phone,content,time,department,lab_id,fix_id-->
+    <update id="updateById" parameterType="com.example.entity.Checks">
+        update checks
+        <set>
+            <if test="username != null">
+                username = #{username},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="content != null">
+                content = #{content},
+            </if>
+            <if test="time != null">
+                time = #{time},
+            </if>
+            <if test="department != null">
+                department = #{department},
+            </if>
+            <if test="labId != null">
+                lab_id = #{labId},
+            </if>
+            <if test="fixId != null">
+                fix_id = #{fixId},
+            </if>
+        </set>
+        where id = #{id} 
+    </update>
+
+</mapper>
